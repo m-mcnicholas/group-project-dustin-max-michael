@@ -6,7 +6,9 @@
 
 export const TAG_WEIGHT = 0.6;
 export const TEXT_WEIGHT = 0.4;
-export const DEFAULT_THRESHOLD = 0.35; // starting point; tune once real seed data is in
+// Tuned against the real 2026-27 seed data (run `node seed/tune-threshold.js`): at 0.35 most extra matches were
+// half-tag-overlap pairs with ~13% wording overlap (noise); 0.40 keeps genuine pairs like Brown/Princeton "joy".
+export const DEFAULT_THRESHOLD = 0.4;
 
 // Small hand-rolled stopword list. Includes words that appear in almost every
 // essay prompt ("describe", "experience", ...) so they don't inflate similarity.
@@ -21,13 +23,29 @@ describe tell us share please discuss explain essay prompt response words word l
 experience experiences time way something someone think thought give example examples
 `.split(/\s+/).filter(Boolean));
 
-/** Lowercase, split on non-letters, drop stopwords and very short tokens, light plural stemming. */
+/**
+ * Very light suffix stemmer so "served"/"serving"/"serves" and "volunteer"/"volunteering" match.
+ * Deliberately conservative: only strips when a stem of 4+ letters remains.
+ */
+export function stem(t) {
+  const strip = (suffix, add = '') => (t.length - suffix.length >= 4 && t.endsWith(suffix) ? t.slice(0, -suffix.length) + add : null);
+  const s =
+    strip('ies', 'y') ??
+    strip('ing') ??
+    strip('ed') ??
+    (t.endsWith('ss') || t.endsWith('us') || t.endsWith('is') ? null : strip('s')) ??
+    t;
+  // Drop a final "e" so serve/served/serves and change/changed agree.
+  return s.length >= 5 && s.endsWith('e') ? s.slice(0, -1) : s;
+}
+
+/** Lowercase, split on non-letters, drop stopwords and very short tokens, light stemming. */
 export function tokenize(text = '') {
   return text
     .toLowerCase()
     .split(/[^a-z]+/)
     .filter((t) => t.length > 2 && !STOPWORDS.has(t))
-    .map((t) => (t.length > 4 && t.endsWith('s') && !t.endsWith('ss') ? t.slice(0, -1) : t));
+    .map(stem);
 }
 
 /** Inverse document frequency over a corpus of prompt strings (smoothed). */
