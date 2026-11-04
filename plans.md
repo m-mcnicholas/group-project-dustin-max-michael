@@ -69,6 +69,16 @@ I picked SQLite because it needs no DB server, the data is one file, and it's ea
 4. Essays, assignment, and the reuse engine with suggestions
 5. Dashboard, deadline view, polish
 
+## Remaining work (after the proof-of-concept skeleton)
+The skeleton covers every page and route above end to end. Still to do:
+- [ ] **Real seed data** (Data and engine): replace the fictional schools with the real 25–40 from official 2026–27 pages, then tune the reuse threshold (currently `0.35`) against them
+- [ ] **Edit/delete custom schools and prompts** (Backend + Frontend)
+- [ ] **Application status UI** (submitted / accepted / etc.) (Frontend)
+- [ ] **Autosave in the essay editor** (Frontend)
+- [ ] **Nicer dashboard and a deadline timeline** (Frontend)
+- [ ] **Real styling** to replace the placeholder CSS (Frontend)
+- [ ] **Production setup** (Backend): set `JWT_SECRET`, serve `client/dist` from Express
+
 ## Verification
 - **Unit tests (Vitest)** for `reuse.js`: two community-service prompts score above the threshold; "why us" vs. "challenge" score below it; word-limit warning
 - **API tests (supertest):** sign up, add two schools with community-service prompts, write an essay, assign it to school A, mark it complete, then check that school B's prompt reads `reusable` with the right essay id
