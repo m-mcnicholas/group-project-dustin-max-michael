@@ -25,25 +25,30 @@ export default function Essays() {
 
   return (
     <div className="page">
-      <h1>Essays</h1>
-      <form className="row" onSubmit={create}>
+      <header className="page-header">
+        <div>
+          <h1>Essays</h1>
+          <p className="muted">One essay can cover several prompts. Finish one and we’ll look for others it could reuse.</p>
+        </div>
+      </header>
+      <form className="new-essay" onSubmit={create}>
         <input placeholder="New essay title…" value={title} onChange={(e) => setTitle(e.target.value)} required />
         <button type="submit">+ New essay</button>
       </form>
       <ErrorText error={error} />
       {essays?.length === 0 && <p className="muted">No essays yet. Start one here or from a school’s requirement list.</p>}
-      <table className="table">
-        <tbody>
-          {essays?.map((e) => (
-            <tr key={e.id}>
-              <td><Link to={`/essays/${e.id}`}>{e.title}</Link></td>
-              <td className="muted small">{e.word_count} words</td>
-              <td className="muted small">{e.assignments.map((a) => a.college_name).join(', ') || 'Not assigned'}</td>
-              <td><StatusBadge status={e.status} /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="essay-list">
+        {essays?.map((e) => (
+          <Link key={e.id} to={`/essays/${e.id}`} className="card essay-row">
+            <div>
+              <div className="title">{e.title}</div>
+              <div className="muted small assigned-to">{e.assignments.map((a) => a.college_name).join(', ') || 'Not assigned to a prompt'}</div>
+            </div>
+            <span className="muted small nowrap">{e.word_count} words</span>
+            <StatusBadge status={e.status} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

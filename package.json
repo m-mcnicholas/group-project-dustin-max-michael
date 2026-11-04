@@ -1,0 +1,12 @@
+{
+  "name": "college-apps-tracker",
+  "private": true,
+  "description": "Convenience scripts for running the production build. Day-to-day dev still happens in client/ and server/.",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix client run build",
+    "seed": "npm --prefix server run seed",
+    "test": "npm --prefix server test",
+    "start": "NODE_ENV=production node server/src/index.js"
+  }
+}

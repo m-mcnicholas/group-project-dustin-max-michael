@@ -1,0 +1,330 @@
+{
+  "_README": "FICTIONAL test fixture used by test/api.test.js. The real seed data lives in seed/colleges.json.",
+  "colleges": [
+    {
+      "name": "Northfield University",
+      "location": "Northfield, MN",
+      "platform": "Common App",
+      "deadline_ed": "2026-11-01",
+      "deadline_ea": null,
+      "deadline_rd": "2027-01-02",
+      "source_url": null,
+      "last_verified": null,
+      "requirements": [
+        {
+          "type": "essay",
+          "title": "Common App Personal Essay",
+          "shared_key": "common_app_personal",
+          "word_limit": 650,
+          "topics": [
+            "personal_statement"
+          ],
+          "prompt_text": "Choose one of the Common App personal essay prompts and write a personal statement that shows who you are beyond grades and test scores."
+        },
+        {
+          "type": "essay",
+          "title": "Community Supplement",
+          "word_limit": 250,
+          "topics": [
+            "community_service"
+          ],
+          "prompt_text": "Describe a way you have served your community through volunteering or service. What impact did your service have on others and on you?"
+        },
+        {
+          "type": "essay",
+          "title": "Why Northfield?",
+          "word_limit": 200,
+          "topics": [
+            "why_us"
+          ],
+          "prompt_text": "Why do you want to attend Northfield University? What specific programs, opportunities, or traditions draw you to our campus?"
+        },
+        {
+          "type": "rec",
+          "title": "Counselor recommendation"
+        },
+        {
+          "type": "rec",
+          "title": "Teacher recommendation"
+        },
+        {
+          "type": "transcript",
+          "title": "Official transcript"
+        },
+        {
+          "type": "test_scores",
+          "title": "SAT/ACT scores",
+          "optional": true
+        },
+        {
+          "type": "fee",
+          "title": "Application fee ($80)"
+        }
+      ]
+    },
+    {
+      "name": "Bayview College",
+      "location": "Monterey, CA",
+      "platform": "Common App",
+      "deadline_ed": null,
+      "deadline_ea": "2026-11-15",
+      "deadline_rd": "2027-01-15",
+      "source_url": null,
+      "last_verified": null,
+      "requirements": [
+        {
+          "type": "essay",
+          "title": "Common App Personal Essay",
+          "shared_key": "common_app_personal",
+          "word_limit": 650,
+          "topics": [
+            "personal_statement"
+          ],
+          "prompt_text": "Choose one of the Common App personal essay prompts and write a personal statement that shows who you are beyond grades and test scores."
+        },
+        {
+          "type": "essay",
+          "title": "Service Reflection",
+          "word_limit": 300,
+          "topics": [
+            "community_service",
+            "growth"
+          ],
+          "prompt_text": "Tell us about a community service or volunteer experience that mattered to you. How did serving your community change you?"
+        },
+        {
+          "type": "essay",
+          "title": "Overcoming a Challenge",
+          "word_limit": 250,
+          "topics": [
+            "challenge",
+            "growth"
+          ],
+          "prompt_text": "Reflect on a time you faced a setback, failure, or obstacle. How did you respond, and what did you learn about yourself?"
+        },
+        {
+          "type": "rec",
+          "title": "Teacher recommendation"
+        },
+        {
+          "type": "transcript",
+          "title": "Official transcript"
+        },
+        {
+          "type": "fee",
+          "title": "Application fee ($75)"
+        }
+      ]
+    },
+    {
+      "name": "Ridgeline Institute of Technology",
+      "location": "Boulder, CO",
+      "platform": "own",
+      "deadline_ed": null,
+      "deadline_ea": "2026-11-01",
+      "deadline_rd": "2027-01-05",
+      "source_url": null,
+      "last_verified": null,
+      "requirements": [
+        {
+          "type": "essay",
+          "title": "Why this major?",
+          "word_limit": 250,
+          "topics": [
+            "why_major",
+            "intellectual_curiosity"
+          ],
+          "prompt_text": "What field of study do you hope to pursue, and what experiences sparked your interest in that major?"
+        },
+        {
+          "type": "essay",
+          "title": "Something you built",
+          "word_limit": 200,
+          "topics": [
+            "activity",
+            "creativity"
+          ],
+          "prompt_text": "Tell us about something you designed, built, or created outside of class. What problem were you solving?"
+        },
+        {
+          "type": "essay",
+          "title": "Collaboration",
+          "word_limit": 200,
+          "topics": [
+            "leadership",
+            "activity"
+          ],
+          "prompt_text": "Describe a time you worked on a team toward a shared goal. What role did you play and what leadership did you show?"
+        },
+        {
+          "type": "rec",
+          "title": "Math or science teacher recommendation"
+        },
+        {
+          "type": "transcript",
+          "title": "Official transcript"
+        },
+        {
+          "type": "test_scores",
+          "title": "SAT/ACT scores"
+        },
+        {
+          "type": "interview",
+          "title": "Alumni interview",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "Lakeshore State University",
+      "location": "Madison, WI",
+      "platform": "Coalition",
+      "deadline_ed": null,
+      "deadline_ea": "2026-11-01",
+      "deadline_rd": "2027-02-01",
+      "source_url": null,
+      "last_verified": null,
+      "requirements": [
+        {
+          "type": "essay",
+          "title": "Personal Statement",
+          "word_limit": 650,
+          "topics": [
+            "personal_statement",
+            "identity"
+          ],
+          "prompt_text": "Share a story about your background, identity, or an experience that shaped who you are today."
+        },
+        {
+          "type": "essay",
+          "title": "Why Lakeshore?",
+          "word_limit": 300,
+          "topics": [
+            "why_us",
+            "why_major"
+          ],
+          "prompt_text": "Why are you interested in attending Lakeshore State University, and how will our academic programs help you reach your goals?"
+        },
+        {
+          "type": "transcript",
+          "title": "Self-reported transcript"
+        },
+        {
+          "type": "fee",
+          "title": "Application fee ($60)"
+        }
+      ]
+    },
+    {
+      "name": "Harborview University",
+      "location": "Providence, RI",
+      "platform": "Common App",
+      "deadline_ed": "2026-11-01",
+      "deadline_ea": null,
+      "deadline_rd": "2027-01-03",
+      "source_url": null,
+      "last_verified": null,
+      "requirements": [
+        {
+          "type": "essay",
+          "title": "Common App Personal Essay",
+          "shared_key": "common_app_personal",
+          "word_limit": 650,
+          "topics": [
+            "personal_statement"
+          ],
+          "prompt_text": "Choose one of the Common App personal essay prompts and write a personal statement that shows who you are beyond grades and test scores."
+        },
+        {
+          "type": "essay",
+          "title": "Intellectual Curiosity",
+          "word_limit": 250,
+          "topics": [
+            "intellectual_curiosity"
+          ],
+          "prompt_text": "What idea, question, or topic makes you lose track of time? Why does it captivate your curiosity?"
+        },
+        {
+          "type": "essay",
+          "title": "Your Community",
+          "word_limit": 250,
+          "topics": [
+            "community_service",
+            "diversity"
+          ],
+          "prompt_text": "Describe a community you belong to and how you have contributed to it through service or volunteering."
+        },
+        {
+          "type": "rec",
+          "title": "Counselor recommendation"
+        },
+        {
+          "type": "rec",
+          "title": "Two teacher recommendations"
+        },
+        {
+          "type": "transcript",
+          "title": "Official transcript"
+        },
+        {
+          "type": "portfolio",
+          "title": "Arts supplement",
+          "optional": true
+        },
+        {
+          "type": "fee",
+          "title": "Application fee ($85)"
+        }
+      ]
+    },
+    {
+      "name": "Cedar Hills College",
+      "location": "Asheville, NC",
+      "platform": "Common App",
+      "deadline_ed": "2026-11-15",
+      "deadline_ea": null,
+      "deadline_rd": "2027-01-15",
+      "source_url": null,
+      "last_verified": null,
+      "requirements": [
+        {
+          "type": "essay",
+          "title": "Common App Personal Essay",
+          "shared_key": "common_app_personal",
+          "word_limit": 650,
+          "topics": [
+            "personal_statement"
+          ],
+          "prompt_text": "Choose one of the Common App personal essay prompts and write a personal statement that shows who you are beyond grades and test scores."
+        },
+        {
+          "type": "essay",
+          "title": "Looking Ahead",
+          "word_limit": 200,
+          "topics": [
+            "future_goals"
+          ],
+          "prompt_text": "Where do you see yourself ten years from now, and how will a Cedar Hills education help you get there?"
+        },
+        {
+          "type": "essay",
+          "title": "Family & Roots",
+          "word_limit": 250,
+          "topics": [
+            "family",
+            "identity"
+          ],
+          "prompt_text": "How has your family or cultural background influenced your values and the person you are becoming?"
+        },
+        {
+          "type": "rec",
+          "title": "Teacher recommendation"
+        },
+        {
+          "type": "transcript",
+          "title": "Official transcript"
+        }
+      ]
+    }
+  ]
+}

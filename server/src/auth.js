@@ -3,11 +3,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const COOKIE = 'token';
+const isProd = process.env.NODE_ENV === 'production';
+if (isProd && !process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET must be set when NODE_ENV=production (e.g. `openssl rand -hex 32`).');
+}
 const SECRET = process.env.JWT_SECRET || 'dev-only-secret-change-me';
 const cookieOpts = {
   httpOnly: true,
   sameSite: 'lax',
-  secure: process.env.NODE_ENV === 'production',
+  // Secure cookies need HTTPS. Set COOKIE_SECURE=false to try a production build over plain http://localhost.
+  secure: isProd && process.env.COOKIE_SECURE !== 'false',
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 

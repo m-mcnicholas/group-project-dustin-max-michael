@@ -1,7 +1,8 @@
 // Thin fetch() wrapper. Every call goes to /api (proxied to Express in dev).
-async function request(method, path, body) {
+async function request(method, path, body, { keepalive = false } = {}) {
   const res = await fetch(`/api${path}`, {
     method,
+    keepalive, // lets a final autosave finish while the tab is closing
     credentials: 'same-origin',
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined,
@@ -27,7 +28,11 @@ export const api = {
   colleges: (search = '') => request('GET', `/colleges?search=${encodeURIComponent(search)}`),
   college: (id) => request('GET', `/colleges/${id}`),
   createCollege: (data) => request('POST', '/colleges', data),
+  updateCollege: (id, data) => request('PATCH', `/colleges/${id}`, data),
+  deleteCollege: (id) => request('DELETE', `/colleges/${id}`),
   addRequirement: (collegeId, data) => request('POST', `/colleges/${collegeId}/requirements`, data),
+  updateRequirement: (collegeId, reqId, data) => request('PATCH', `/colleges/${collegeId}/requirements/${reqId}`, data),
+  deleteRequirement: (collegeId, reqId) => request('DELETE', `/colleges/${collegeId}/requirements/${reqId}`),
 
   // my list
   myColleges: () => request('GET', '/my/colleges'),
@@ -48,7 +53,7 @@ export const api = {
   essays: () => request('GET', '/essays'),
   essay: (id) => request('GET', `/essays/${id}`),
   createEssay: (data) => request('POST', '/essays', data),
-  updateEssay: (id, data) => request('PATCH', `/essays/${id}`, data),
+  updateEssay: (id, data, opts) => request('PATCH', `/essays/${id}`, data, opts),
   deleteEssay: (id) => request('DELETE', `/essays/${id}`),
   assignEssay: (id, requirement_id) => request('POST', `/essays/${id}/assign`, { requirement_id }),
   unassignEssay: (id, requirementId) => request('DELETE', `/essays/${id}/assign/${requirementId}`),
