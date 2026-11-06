@@ -9,17 +9,12 @@ Every page and API route in the plan works end to end. The seed data is **35 rea
 You need Node 20+.
 
 ```bash
-# terminal 1: API on :3001
-cd server
-npm install
-npm run seed        # loads seed/colleges.json into server/data/app.db
-npm run dev
-
-# terminal 2: React app on :5173 (proxies /api to :3001)
-cd client
-npm install
-npm run dev
+# From the repository root: install, seed, and start both servers
+npm start
 ```
+
+Open http://localhost:5173. Press Ctrl+C to stop both servers. On later runs,
+`npm run dev` starts them without installing or seeding again.
 
 Open http://localhost:5173, sign up, and add **Princeton** and **Brown** from *Colleges*. Then start Princeton's "More About You: What brings you joy" essay, write something (it autosaves), and click **Mark complete**. Brown's "Something that brings you joy" now shows **♻ Similar essay can be reused**, and the dashboard lists it under *Reuse opportunities*.
 
@@ -31,7 +26,7 @@ Tests: `cd server && npm test` runs 27 tests: Vitest unit tests for the engine, 
 npm run install:all          # from the repo root
 npm run build                # builds client/dist
 npm run seed
-JWT_SECRET=$(openssl rand -hex 32) npm start   # Express serves the API *and* client/dist on :3001
+JWT_SECRET=$(openssl rand -hex 32) npm run start:prod   # Express serves the API *and* client/dist on :3001
 ```
 
 - With `NODE_ENV=production`, the server **refuses to start without `JWT_SECRET`**. Auth cookies are `Secure` there, so serve it over HTTPS. To try it over plain `http://localhost`, add `COOKIE_SECURE=false`.
