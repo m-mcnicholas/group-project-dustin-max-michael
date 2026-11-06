@@ -38,6 +38,20 @@ describe('real seed data (seed/colleges.json)', () => {
     expect(count()).toBe(before);
   });
 
+  it('re-seeding removes curated schools that are no longer in the JSON, but keeps custom ones', async () => {
+    const pdb = openDb(':memory:');
+    const old = { colleges: [{ name: 'Old Placeholder U', deadline_rd: '2027-01-01', requirements: [] }, ...data.colleges] };
+    seed(pdb, old);
+    const papp = request.agent(createApp(pdb, { clientDist: null }));
+    await papp.post('/api/auth/signup').send({ email: 'p@example.com', password: 'password123', name: 'P' }).expect(200);
+    await papp.post('/api/colleges').send({ name: 'My Custom College' }).expect(201);
+    expect(seed(pdb, data).removed).toBe(1);
+    const names = pdb.prepare('SELECT name FROM colleges').all().map((r) => r.name);
+    expect(names).not.toContain('Old Placeholder U');
+    expect(names).toContain('My Custom College');
+    expect(names.length).toBe(data.colleges.length + 1);
+  });
+
   it('one UC Personal Insight essay covers the same question at every UC campus', async () => {
     const ucs = (await agent.get('/api/colleges').query({ search: 'University of California' })).body.colleges;
     expect(ucs.length).toBeGreaterThanOrEqual(3);
