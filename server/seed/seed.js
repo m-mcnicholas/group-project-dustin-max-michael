@@ -1,6 +1,7 @@
 // Load seed/colleges.json into SQLite: `npm run seed`
 // Safe to re-run: curated schools are matched by name and updated in place, so users'
-// lists and essays survive. Curated requirements missing from the JSON are removed.
+// lists and essays survive. Curated schools and requirements missing from the JSON are removed
+// (custom schools users created are never touched).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -29,6 +30,8 @@ export function seed(db, data) {
 
   let schools = 0;
   let reqs = 0;
+  let removed = 0;
+  const keptColleges = [];
   db.transaction(() => {
     for (const c of data.colleges) {
       const row = {
@@ -69,15 +72,21 @@ export function seed(db, data) {
       db.prepare(
         `DELETE FROM requirements WHERE college_id = ? AND created_by IS NULL ${keep.length ? `AND id NOT IN (${keep.join(',')})` : ''}`,
       ).run(collegeId);
+      keptColleges.push(collegeId);
     }
+    // Curated schools no longer in the JSON (e.g. the old fictional placeholder schools) are removed.
+    // Users' list entries and requirement statuses for them cascade away; custom schools are untouched.
+    removed = db
+      .prepare(`DELETE FROM colleges WHERE created_by IS NULL AND id NOT IN (${keptColleges.join(',') || 'NULL'})`)
+      .run().changes;
   })();
-  return { schools, reqs };
+  return { schools, reqs, removed };
 }
 
 // Run directly: node seed/seed.js
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const data = JSON.parse(fs.readFileSync(path.join(here, 'colleges.json'), 'utf8'));
   const db = openDb();
-  const { schools, reqs } = seed(db, data);
-  console.log(`Seeded ${schools} schools and ${reqs} requirements.`);
+  const { schools, reqs, removed } = seed(db, data);
+  console.log(`Seeded ${schools} schools and ${reqs} requirements.${removed ? ` Removed ${removed} old curated school(s) no longer in colleges.json.` : ''}`);
 }
