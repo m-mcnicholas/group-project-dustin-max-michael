@@ -23,10 +23,14 @@ export default function Tags() {
 
   return (
     <div className="page">
-      <h1>Tags</h1>
-      <p className="muted">Label schools however you like (“reach”, “safety”, “dream”…), then filter your dashboard by tag.</p>
+      <header className="page-header">
+        <div>
+          <h1>Tags</h1>
+          <p className="muted">Label schools however you like (“reach”, “safety”, “dream”…), then filter your dashboard by tag.</p>
+        </div>
+      </header>
       <form
-        className="row"
+        className="card tag-form"
         onSubmit={(e) => {
           e.preventDefault();
           run(api.createTag(name, color)).then(() => setName(''));
@@ -37,9 +41,10 @@ export default function Tags() {
         <button type="submit">Add tag</button>
       </form>
       <ErrorText error={error} />
-      <ul className="checklist">
+      {tags.length > 0 && <section className="card">
+      <ul className="checklist tag-list">
         {tags.map((t) => (
-          <li key={t.id} className="row">
+          <li key={t.id}>
             <TagChip tag={t} />
             <input
               defaultValue={t.name}
@@ -51,6 +56,7 @@ export default function Tags() {
           </li>
         ))}
       </ul>
+      </section>}
     </div>
   );
 }

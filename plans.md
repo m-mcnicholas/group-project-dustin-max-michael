@@ -69,6 +69,18 @@ I picked SQLite because it needs no DB server, the data is one file, and it's ea
 4. Essays, assignment, and the reuse engine with suggestions
 5. Dashboard, deadline view, polish
 
+## Remaining work (after the proof-of-concept skeleton)
+The skeleton covers every page and route above end to end. Still to do:
+- [x] **Real seed data** (Data and engine): 35 real schools from official 2026–27 pages (verified 2026-11-04; per-school `notes` flag anything unconfirmed). Threshold tuned from `0.35` to `0.40` with `seed/tune-threshold.js`, plus light stemming in the tokenizer
+- [x] **Edit/delete custom schools and prompts** (Backend + Frontend): creator-only `PATCH`/`DELETE` on `/colleges/:id` and `/colleges/:id/requirements/:reqId`
+- [x] **Application status UI** (submitted / accepted / etc.) (Frontend): picker on the school page, badges on the dashboard and timeline
+- [x] **Autosave in the essay editor** (Frontend): saves 1.2s after you stop typing and when you leave or close the page; Cmd/Ctrl+S saves too
+- [x] **Nicer dashboard and a deadline timeline** (Frontend): stat tiles, tag filter chips, month-grouped timeline with a "today" marker and urgency colors
+- [x] **Real styling** to replace the placeholder CSS (Frontend), with dark mode and mobile layout
+- [x] **Production setup** (Backend): `JWT_SECRET` required in production, Express serves `client/dist`, root `npm run build` / `npm start`
+
+Still open: re-verify the schools flagged in the seed `notes` (USC, UVA, UF, Michigan, NYU).
+
 ## Verification
 - **Unit tests (Vitest)** for `reuse.js`: two community-service prompts score above the threshold; "why us" vs. "challenge" score below it; word-limit warning
 - **API tests (supertest):** sign up, add two schools with community-service prompts, write an essay, assign it to school A, mark it complete, then check that school B's prompt reads `reusable` with the right essay id

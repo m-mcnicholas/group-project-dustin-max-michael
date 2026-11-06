@@ -27,7 +27,9 @@ export default function AuthPage({ mode }) {
   }
 
   return (
+    <div className="auth-wrap">
     <form className="card auth" onSubmit={submit}>
+      <span className="brand"><span className="brand-mark">🎓</span>App Tracker</span>
       <h1>{isSignup ? 'Create your account' : 'Sign in'}</h1>
       {isSignup && (
         <label>
@@ -49,5 +51,6 @@ export default function AuthPage({ mode }) {
         {isSignup ? <>Have an account? <Link to="/login">Sign in</Link></> : <>New here? <Link to="/signup">Create an account</Link></>}
       </p>
     </form>
+    </div>
   );
 }

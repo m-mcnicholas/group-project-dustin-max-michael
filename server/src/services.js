@@ -144,6 +144,13 @@ export function runReuseEngine(db, userId, essayId, threshold = DEFAULT_THRESHOL
   return written;
 }
 
+/** Re-run the engine for every complete essay (e.g. after the user's list or a prompt changed). */
+export function rerunAllReuse(db, userId) {
+  for (const { id } of db.prepare("SELECT id FROM essays WHERE user_id = ? AND status = 'complete'").all(userId)) {
+    runReuseEngine(db, userId, id);
+  }
+}
+
 /** Progress summary for one college's requirements (optional ones excluded). */
 export function progressOf(reqs) {
   const required = reqs.filter((r) => !r.optional);

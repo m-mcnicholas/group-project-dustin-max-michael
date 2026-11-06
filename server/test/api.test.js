@@ -8,7 +8,7 @@ import { createApp } from '../src/app.js';
 import { seed } from '../seed/seed.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const seedData = JSON.parse(fs.readFileSync(path.join(here, '..', 'seed', 'colleges.json'), 'utf8'));
+const seedData = JSON.parse(fs.readFileSync(path.join(here, 'fixtures', 'colleges.json'), 'utf8'));
 
 let agent;
 let db;

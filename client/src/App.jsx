@@ -13,14 +13,14 @@ function Nav() {
   if (!user) return null;
   return (
     <header className="nav">
-      <strong className="brand">🎓 App Tracker</strong>
+      <NavLink to="/" className="brand"><span className="brand-mark">🎓</span>App Tracker</NavLink>
       <NavLink to="/" end>Dashboard</NavLink>
       <NavLink to="/colleges">Colleges</NavLink>
       <NavLink to="/essays">Essays</NavLink>
       <NavLink to="/tags">Tags</NavLink>
       <span className="spacer" />
-      <span className="muted">{user.name}</span>
-      <button className="link" onClick={logout}>Log out</button>
+      <span className="user">{user.name}</span>
+      <button className="ghost small" onClick={logout}>Log out</button>
     </header>
   );
 }

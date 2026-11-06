@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { VISIBLE_COLLEGE, requirementsWithStatus, withTopics } from '../services.js';
+import { VISIBLE_COLLEGE, rerunAllReuse, requirementsWithStatus, withTopics } from '../services.js';
 import { REQUIREMENT_TYPES, TOPICS, cleanTopics } from '../topics.js';
 
 export function collegesRouter(db) {
@@ -80,6 +80,88 @@ export function collegesRouter(db) {
     });
     const id = insert();
     res.status(201).json({ requirement: withTopics(db, [db.prepare('SELECT * FROM requirements WHERE id = ?').get(id)])[0] });
+  });
+
+  // ---- Edit / delete: only things the user created (curated data is read-only) ----
+
+  const ownCollege = (req) => db.prepare('SELECT * FROM colleges WHERE id = ? AND created_by = ?').get(req.params.id, req.user.id);
+  const ownRequirement = (req) =>
+    db
+      .prepare('SELECT * FROM requirements WHERE id = ? AND college_id = ? AND created_by = ?')
+      .get(req.params.reqId, req.params.id, req.user.id);
+
+  // PATCH /api/colleges/:id  { name?, location?, platform?, deadline_ed?, deadline_ea?, deadline_rd? }
+  r.patch('/:id', (req, res) => {
+    const college = ownCollege(req);
+    if (!college) return res.status(404).json({ error: 'Custom college not found (only schools you created can be edited)' });
+    const body = req.body || {};
+    if (body.name !== undefined && !String(body.name).trim()) return res.status(400).json({ error: 'name cannot be empty' });
+    const pick = (k) => (body[k] === undefined ? college[k] : body[k] || null);
+    db.prepare(
+      `UPDATE colleges SET name = ?, location = ?, platform = ?, deadline_ed = ?, deadline_ea = ?, deadline_rd = ? WHERE id = ?`,
+    ).run(
+      body.name !== undefined ? String(body.name).trim() : college.name,
+      pick('location'),
+      pick('platform') || 'own',
+      pick('deadline_ed'),
+      pick('deadline_ea'),
+      pick('deadline_rd'),
+      college.id,
+    );
+    res.json({ college: db.prepare('SELECT * FROM colleges WHERE id = ?').get(college.id) });
+  });
+
+  // DELETE /api/colleges/:id. Cascades to its requirements, list entries and essay assignments.
+  r.delete('/:id', (req, res) => {
+    const college = ownCollege(req);
+    if (!college) return res.status(404).json({ error: 'Custom college not found (only schools you created can be deleted)' });
+    db.prepare('DELETE FROM colleges WHERE id = ?').run(college.id);
+    res.json({ ok: true });
+  });
+
+  // PATCH /api/colleges/:id/requirements/:reqId  { type?, title?, prompt_text?, word_limit?, optional?, topics? }
+  r.patch('/:id/requirements/:reqId', (req, res) => {
+    const existing = ownRequirement(req);
+    if (!existing) return res.status(404).json({ error: 'Custom requirement not found (only prompts you added can be edited)' });
+    const body = req.body || {};
+    const type = body.type ?? existing.type;
+    if (!REQUIREMENT_TYPES.includes(type)) return res.status(400).json({ error: `type must be one of ${REQUIREMENT_TYPES.join(', ')}` });
+    if (body.title !== undefined && !String(body.title).trim()) return res.status(400).json({ error: 'title cannot be empty' });
+    const promptChanged =
+      (body.prompt_text !== undefined && body.prompt_text !== existing.prompt_text) || Array.isArray(body.topics) || type !== existing.type;
+
+    db.transaction(() => {
+      db.prepare('UPDATE requirements SET type = ?, title = ?, prompt_text = ?, word_limit = ?, optional = ? WHERE id = ?').run(
+        type,
+        body.title !== undefined ? String(body.title).trim() : existing.title,
+        body.prompt_text !== undefined ? body.prompt_text || null : existing.prompt_text,
+        body.word_limit !== undefined ? Number(body.word_limit) || null : existing.word_limit,
+        body.optional !== undefined ? (body.optional ? 1 : 0) : existing.optional,
+        existing.id,
+      );
+      if (Array.isArray(body.topics)) {
+        db.prepare('DELETE FROM requirement_topics WHERE requirement_id = ?').run(existing.id);
+        const addTopic = db.prepare('INSERT INTO requirement_topics (requirement_id, topic) VALUES (?, ?)');
+        for (const t of cleanTopics(body.topics)) addTopic.run(existing.id, t);
+      }
+      if (promptChanged) {
+        // The old reuse suggestion was scored against the old wording; recompute.
+        db.prepare(
+          `UPDATE user_requirement_status SET status = 'not_started', reuse_essay_id = NULL, reuse_score = NULL, reuse_reason = NULL
+            WHERE user_id = ? AND requirement_id = ? AND status = 'reusable'`,
+        ).run(req.user.id, existing.id);
+        if (type !== 'essay') db.prepare('DELETE FROM essay_assignments WHERE requirement_id = ?').run(existing.id);
+      }
+    })();
+    if (promptChanged) rerunAllReuse(db, req.user.id);
+    res.json({ requirement: withTopics(db, [db.prepare('SELECT * FROM requirements WHERE id = ?').get(existing.id)])[0] });
+  });
+
+  r.delete('/:id/requirements/:reqId', (req, res) => {
+    const existing = ownRequirement(req);
+    if (!existing) return res.status(404).json({ error: 'Custom requirement not found (only prompts you added can be deleted)' });
+    db.prepare('DELETE FROM requirements WHERE id = ?').run(existing.id);
+    res.json({ ok: true });
   });
 
   return r;

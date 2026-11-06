@@ -5,6 +5,7 @@ import {
   findReuseSuggestions,
   jaccard,
   similarity,
+  stem,
   tokenize,
   wordLimitNote,
 } from '../src/reuse.js';
@@ -36,7 +37,14 @@ const challenge = {
 
 describe('helpers', () => {
   it('tokenize drops stopwords and short words', () => {
-    expect(tokenize('Describe the way YOU served your community!')).toEqual(['served', 'community']);
+    expect(tokenize('Describe the way YOU served your community!')).toEqual(['serv', 'community']);
+  });
+  it('stem collapses common inflections but leaves short words alone', () => {
+    expect(['served', 'serving', 'serves'].map(stem)).toEqual(['serv', 'serv', 'serv']);
+    expect(stem('volunteering')).toBe('volunteer');
+    expect(stem('studies')).toBe('study');
+    expect(['change', 'changed'].map(stem)).toEqual(['chang', 'chang']);
+    expect(['campus', 'class', 'thesis', 'red', 'bring'].map(stem)).toEqual(['campus', 'class', 'thesis', 'red', 'bring']);
   });
   it('jaccard', () => {
     expect(jaccard(['a', 'b'], ['b', 'c'])).toBeCloseTo(1 / 3);

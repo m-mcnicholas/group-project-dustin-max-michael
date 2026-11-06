@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { myColleges, runReuseEngine, setRequirementStatus } from '../services.js';
+import { myColleges, rerunAllReuse, setRequirementStatus } from '../services.js';
 
 const ROUNDS = ['ED', 'EA', 'RD'];
 const APP_STATUSES = ['planning', 'in_progress', 'submitted', 'accepted', 'rejected', 'waitlisted'];
@@ -20,9 +20,7 @@ export function myRouter(db) {
     if (!college) return res.status(404).json({ error: 'College not found' });
     db.prepare('INSERT OR IGNORE INTO user_colleges (user_id, college_id, round) VALUES (?, ?, ?)').run(req.user.id, college.id, round);
     // Already-complete essays may now be reusable for this school's prompts.
-    for (const { id } of db.prepare("SELECT id FROM essays WHERE user_id = ? AND status = 'complete'").all(req.user.id)) {
-      runReuseEngine(db, req.user.id, id);
-    }
+    rerunAllReuse(db, req.user.id);
     res.status(201).json({ colleges: myColleges(db, req.user.id) });
   });
 
